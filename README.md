@@ -52,6 +52,6 @@ and store it in a file (e.g. ```./secrets/mysecret1.txt```) in the following for
 4) Your certificates will be created in ```./certs/live/``` and will be automatically renewed every 24 hours
 
 ## License, Issues and Contributing
-This project is licensed under the GPLv3 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-For issues and contributions, please go to the [Github repository]().
+For issues and contributions, please go to the [Github repository](https://github.com/MatteoValentini-AT/certbot-cloudflare-auto).
