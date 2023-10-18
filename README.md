@@ -17,6 +17,8 @@ services:
     volumes:
       - ./certs:/etc/letsencrypt
       - ./config:/app/config
+    environment:
+      - CERTBOT_INTERVAL = 7d # optional, default: 7d
     secrets:
       - secret1 # e.g. mysecret1
       - secret2
@@ -28,12 +30,19 @@ secrets:
         file: <path-to-secret2>
     ...
 ```
+
+#### CERTBOT_INTERVAL:
+Optional environment variable which specifies the interval in which the certificates should be renewed. 
+Valid units are hours (```h/H```), days (```d/D```), weeks (```w/W```) and months (```m/M```). If no unit is specified, days are used as default.
+**Keep in mind that Let's Encrypt has a [rate limit](https://letsencrypt.org/docs/rate-limits/) of 50 certificates per week and certificates are only valid for 3 months.**
+
 ### config/certs.conf
 ```yaml
 certs:
   domain1.com: # e.g. matteovalentini.at
     secret: secret1 # e.g. mysecret1
     mail: your-mail@example.com # required for letsencrypt
+    additional_params: "--key-type rsa" # optional, additional parameters for certbot
     domains: # (sub)domains for which you want to create a certificate
       - "*.domain1.com" # wildcard domains are supported
   domain2.com:

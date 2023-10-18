@@ -1,7 +1,34 @@
+import os
+import re
 import time
 from os.path import exists
 import yaml
 import subprocess
+
+
+def get_interval():
+    if os.environ.get("CERTBOT_INTERVAL") is None:
+        return (3600 * 24 * 30, "30 days")
+    else:
+        interval_str = os.environ.get("CERTBOT_INTERVAL")
+        if not re.fullmatch(r"\d+[hdwmHDWM]?", interval_str):
+            print("\033[31mInvalid interval format\033[0m")
+            exit(1)
+        interval_str = interval_str.lower()
+        if interval_str[-1] == "h":
+            return (int(interval_str[:-1]) * 3600, f"{int(interval_str[:-1])} hours")
+        elif interval_str[-1] == "d":
+            return (int(interval_str[:-1]) * 3600 * 24, f"{int(interval_str[:-1])} days")
+        elif interval_str[-1] == "w":
+            return (int(interval_str[:-1]) * 3600 * 24 * 7, f"{int(interval_str[:-1])} weeks")
+        elif interval_str[-1] == "m":
+            return (int(interval_str[:-1]) * 3600 * 24 * 30, f"{int(interval_str[:-1])} months")
+        else:
+            return (int(interval_str) * 3600 * 24, f"{int(interval_str)} days")
+
+
+interval = get_interval()
+
 
 def process_section(section, section_name):
     secret = None
@@ -25,14 +52,20 @@ def process_section(section, section_name):
     except KeyError:
         print(f"\033[31mMissing mail for section {section_name}\033[0m")
         return
+    additional = ""
+    try:
+        additional = section["additional_params"]
+    except KeyError:
+        pass
     request_string = (f"-n -q --dns-cloudflare --dns-cloudflare-credentials /run/secrets/{secret} --agree-tos --email {mail} --server https://acme-v02.api"
-                      f".letsencrypt.org/directory")
+                      f".letsencrypt.org/directory {additional}")
     print(f"\033[94mSection {section_name}: \033[0m")
     for domain in domains:
         print(f"- {domain}")
     for domain in domains:
         request_string += f" -d {domain}"
     return request_string
+
 
 def main():
     try:
@@ -50,8 +83,8 @@ def main():
                         print(f"\033[94mRunning command: \033[0mcertbot certonly {command}")
                         subprocess.run(f"certbot certonly {command}", shell=True)
                         time.sleep(3)
-                    print("\033[32mWaiting 24 hours before renewing certificates\033[0m")
-                    time.sleep(3600*24)
+                    print(f"\033[32mWaiting {interval[1]} before renewing certificates\033[0m")
+                    time.sleep(interval[0])
                     print("\033[32mRenewing certificates\033[0m")
             except KeyError:
                 print("\033[31mMissing certs section in config file\033[0m")
@@ -59,5 +92,6 @@ def main():
     except FileNotFoundError:
         print("\033[31mUnable to load config file\033[0m")
         exit(1)
+
 
 main()
