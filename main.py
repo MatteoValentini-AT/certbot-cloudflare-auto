@@ -57,7 +57,7 @@ def process_section(section, section_name):
         additional = section["additional_params"]
     except KeyError:
         pass
-    request_string = (f"-n -q --dns-cloudflare --dns-cloudflare-credentials /run/secrets/{secret} --agree-tos --email {mail} --server https://acme-v02.api"
+    request_string = (f"--force-renew -n -q --dns-cloudflare --dns-cloudflare-credentials /run/secrets/{secret} --agree-tos --email {mail} --server https://acme-v02.api"
                       f".letsencrypt.org/directory {additional}")
     print(f"\033[94mSection {section_name}: \033[0m")
     for domain in domains:
