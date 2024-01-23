@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "certbot-cloudflare-auto"
+version = "1.0.1"
+description = ""
+authors = ["Matteo Valentini <software@matteovalentini.at>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pyyaml = "^6.0.0"
+certbot = "^2.8.0"
+certbot-dns-cloudflare = "^2.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
