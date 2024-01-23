@@ -66,6 +66,10 @@ def process_section(section, section_name):
         request_string += f" -d {domain}"
     return request_string
 
+def check_and_generate_dhparams():
+    if not exists("/etc/letsencrypt/dhparams/dhparam.pem"):
+        print("\033[32mGenerating dhparams\033[0m")
+        subprocess.run("openssl dhparam -out /etc/letsencrypt/dhparams/dhparam.pem 2048", shell=True)
 
 def main():
     try:
@@ -77,6 +81,7 @@ def main():
                 print("\033[32mLoading sections...\033[0m")
                 for section in sections.items():
                     commands.append(process_section(section[1], section[0]))
+                check_and_generate_dhparams()
                 print("\033[32mCreating certificates\033[0m")
                 while True:
                     for command in commands:
