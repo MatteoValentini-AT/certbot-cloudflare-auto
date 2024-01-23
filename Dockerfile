@@ -1,8 +1,7 @@
 FROM alpine:latest
-RUN apk add py3-pip poetry openssl
 WORKDIR /app
+RUN apk add py3-pip openssl && python3 -m venv /app/venv
+RUN /app/venv/bin/pip install certbot certbot-dns-cloudflare pyyaml
 COPY main.py .
-COPY pyproject.toml .
-RUN poetry install
 RUN chmod +x main.py
-CMD ["python", "-u", "main.py"]
+CMD . /app/venv/bin/active && python main.py
