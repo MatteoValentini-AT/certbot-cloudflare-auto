@@ -36,7 +36,7 @@ Optional environment variable which specifies the interval in which the certific
 Valid units are hours (```h/H```), days (```d/D```), weeks (```w/W```) and months (```m/M```). If no unit is specified, days are used as default.
 **Keep in mind that Let's Encrypt has a [rate limit](https://letsencrypt.org/docs/rate-limits/) of 50 certificates per week and certificates are only valid for 3 months.**
 
-### config/certs.conf
+### config/certs.yml
 ```yaml
 certs:
   domain1.com: # e.g. matteovalentini.at
@@ -53,7 +53,7 @@ certs:
       - "www.domain2.com"
       - "mail.domain2.com"
 ```
-1) Create ```docker-compose.yml``` and ```config/certs.conf``` as shown above. For each domain, add a new entry in ```config/certs.conf```
+1) Create ```docker-compose.yml``` and ```config/certs.yml``` as shown above. For each domain, add a new entry in ```config/certs.yml```
 2) Create a token which has access to modify the DNS records of your domains on Cloudflare 
 (see [this](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) guide)
 and store it in a file (e.g. ```./secrets/mysecret1.txt```) in the following format ```dns_cloudflare_api_token = your-api-token```
